@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>D3 - Data Driven Documents</title>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.3.13/d3.min.js"></script>
+    <script
+        src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+    <style type="text/css">
+
+        body {
+            padding-top: 20px;
+            padding-left: 15px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #chartArea {
+            width: 500px;
+            height: 400px;
+            background-color: #CCC;
+        }
+
+        .dot {
+            fill: teal;
+            fill-opacity: 0.7;
+            stroke: black;
+        }
+
+        .active {
+            fill: magenta;
+            fill-opacity: 0.5;
+            stroke-width: 3px;
+        }
+
+        .axis path, .axis line {
+            fill: none;
+            stroke: #000;
+            stroke-width: 1px;
+            shape-rendering: crispEdges;
+        }
+
+    </style>
+</head>
+<body>
+<div id="chartArea"></div>
+<script type="text/javascript">
+
+    var enemies = _.map(_.range(15), function (i) {
+        return {
+            x: Math.round(Math.random() * 100),
+            y: Math.round(Math.random() * 100),
+            r: 20
+        };
+    });
+
+    var svg = d3.select('#chartArea').append('svg');
+
+    var margin = {top: 20, right: 20, bottom: 20, left: 20};
+
+    var w = 500 - margin.left - margin.right,
+        h = 400 - margin.top - margin.bottom;
+
+    var xScale = d3.scale.linear()
+        .domain([0, 100])
+        .range([0, w]);
+
+    var yScale = d3.scale.linear()
+        .domain([0, 100])
+        .range([h, 0]);
+
+    svg.attr('width', w + margin.left + margin.right)
+    .attr('height', h + margin.top + margin.bottom)
+    .append('g')
+    .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
+
+    svg.select('circle')
+    .enter()
+    .append('circle')
+    .attr('class', 'hero')
+    .attr('cx', function (d) {
+        return xScale(d.x);
+    })
+    .attr('cy', function (d) {
+        return yScale(d.y);
+    })
+    .attr('r', function (d) {
+        return d.r;
+    });
+
+    svg.selectAll('circle')
+    .data(enemies)
+    .enter()
+    .append('circle')
+    .attr('class', 'dot')
+    .attr('cx', function (d) {
+        return xScale(d.x);
+    })
+    .attr('cy', function (d) {
+        return yScale(d.y);
+    })
+    .attr('r', function (d) {
+        return d.r;
+    });
+
+    setInterval(function() {
+        _.each(enemies, function (datum) {
+            datum.x = Math.round(Math.random() * 100);
+            datum.y = Math.round(Math.random() * 100);
+        })
+
+        svg.selectAll('circle')
+            .transition()
+            .duration(1000)
+            .attr('cx', function (d) {
+                return xScale(d.x);
+            })
+            .attr('cy', function (d) {
+                return yScale(d.y);
+            });
+    }, 1000);
+
+
+</script>
+</html>
