@@ -22,3 +22,15 @@ body {
   margin: 0 auto;
 }
 
+.board svg {
+  width: 100%;
+}
+
+.hero {
+  z-index: 1000;
+  position: absolute;
+}
+
+.hero:hover {
+  cursor: move;
+}
