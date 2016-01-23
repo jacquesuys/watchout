@@ -1,5 +1,19 @@
-/* your beautiful css styling goes here! */
+body {
+  position: relative;
+}
 
-/* Note: an asteroid image is included in this repo.
-Feel free to use it if you like. */
+.scoreboard {
+  background-color: #fff;
+  padding: 10px;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
 
+.enemies {
+  background-image: url(asteriod.png);
+  background-repeat: no-repeat;
+  background-position: top left;
+  width: 200px;
+  height: 200px;
+}
