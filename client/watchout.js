@@ -5,6 +5,7 @@
   // returns margin object value
   var w = 500 - margin.left - margin.right,
       h = 400 - margin.top - margin.bottom;
+
   var enemies = [];
 
   var Unit = function (x, y, r) {
@@ -31,12 +32,12 @@
 
   var Hero = function() {
     var r = 10;
-    var x = w / 2 - r;
-    var y = h / 2 - r;
+    var x = 50;
+    var y = 50;
     
     Unit.call(this, x, y, r);
   };
-  
+
   // x scale size    
   var xScale = d3.scale.linear()
       .domain([0, 100])
@@ -52,6 +53,21 @@
   .append('g')
   .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
 
+  svg.selectAll('circle')
+  .data([new Hero()])
+  .enter()
+  .append('circle')
+  .attr('class', 'hero')
+  .attr('fill', 'red')
+  .attr('cx', function (d) {
+      return xScale(d.x);
+  })
+  .attr('cy', function (d) {
+      return yScale(d.y);
+  })
+  .attr('r', function (d) {
+      return d.r;
+  });
   
   // selects the circles in the board, use data to append the circles with the attribute of cx, cy, and r.
   svg.selectAll('circle')
@@ -70,6 +86,7 @@
       return d.r;
   });
 
+
   // Create custom tween (animation term) for each enemies created
   setInterval(function() {
       _.each(enemies, function (datum) {
@@ -77,7 +94,7 @@
           datum.y = Math.round(Math.random() * 100);
       })
 
-      svg.selectAll('circle')
+      svg.selectAll('.enemy')
           .transition()
           .duration(1000)
           .attr('cx', function (d) {
