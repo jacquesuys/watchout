@@ -30,10 +30,7 @@ var enemies = [1, 2, 3];
     .data(enemies)
     .enter()
     .append('svg')
-    .attr('class', 'enemies')
-    .text(function(d){
-      return d;
-    });
+    .attr('class', 'enemies');
 
 // Update score
   // html span
