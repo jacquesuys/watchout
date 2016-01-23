@@ -1,115 +1,104 @@
-// start slingin' some d3 here.
-
-
-  // General game options
-  var gameOptions = {
-    height: 450,
-    width: 700,
-    nEnemies: 30,
-    padding: 20
-  };
-
-  // Store the enemies in the storage array
+   // svg selector
+  var svg = d3.select('.board').append('svg');
+  // css margin
+  var margin = {top: 20, right: 20, bottom: 20, left: 20};
+  // returns margin object value
+  var w = 500 - margin.left - margin.right,
+      h = 400 - margin.top - margin.bottom;
   var enemies = [];
 
-  // Psuedoclassical approach
   var Unit = function (x, y, r) {
     this.x = x;
     this.y = y;
     this.r = r;
   };
 
-
-  // Move unit for all the enemies
-  // Unit.prototype.move = function() {
-  //   var randY = Math.floor(0, Math.random() * gameOptions.height);
-  //   var randX = Math.floor(0, Math.random() * gameOptions.width);
-
-  // ;(setInterval(function() {
-  //     this.x = randX;
-  //     this.y = randY;
-  //   }, 1000))();  
-  // };
-
-  var i = 3;
-  while(i > 0) {
-    var Enemy = new Unit(50, 50, 40);
-    enemies.push(Enemy);
-    i--;
-  }
-
-// Scores
-  // Board config
-    // find container
-  var $board = d3.select('.board');
-    
-  $board
-  .style('background-color', 'black')
-  .style('height', gameOptions.height + 'px')
-  .style('width', gameOptions.width + 'px')
-  .style('padding', gameOptions.padding + 'px');    
-  // append SVG scalable vector graphic
-    // add attr
-
-  // Select the board, 
-  $board
-  .selectAll('.board')
-  .data(enemies)
-  .enter()
-  .append('svg')
-  .attr('class', 'enemy')
-  .append('circle')
-  .attr('cx', function(d){
-    return d.x + 'px';
-  })
-  .attr('cy', function(d){
-    return d.y + 'px';
-  })
-  .attr('cr', function (d) {
-    return d.r + 'px';
-  });
-  
-
-  // d3.selectAll('.enemy')
-  //   .transition()
-  //   .duration(500)
-  //   .attr('x', function (d) { // return object and return property x
-  //     return d.x;
-  //   })
-  //   .attr('y', function (d) { // return the object and return property x;
-  //     return d.y;
-  //   })
-
-
-    
-  function increment () {
-    var i = 0; 
-    return function () {
-      i++;
-      d3.select('.current span')
-        .text(i);
-      d3.select('.highscore span')
-        .text(i);
-    };
+  var Enemy = function () {
+    var ran1 = Math.floor(Math.random() * 100);
+    var ran2 = Math.floor(Math.random() * 100);
+    Unit.call(this, ran1, ran2, 20);
   };
 
-  setInterval(increment(), 100);
+  var enemyMaker = function(n) {
+    while (n) {
+      var enemy = new Enemy();
+      enemies.push(enemy);
+      n--;
+    }    
+  };
 
-// Update score
-  // html span
+  enemyMaker(15);
 
-// Player
-  // set up drag, see behaviours https://github.com/mbostock/d3/wiki/Behaviors
+  var Hero = function() {
+    var r = 10;
+    var x = w / 2 - r;
+    var y = h / 2 - r;
+    
+    Unit.call(this, x, y, r);
+  };
+  
+  // x scale size    
+  var xScale = d3.scale.linear()
+      .domain([0, 100])
+      .range([0, w]);
+  // y scale size    
+  var yScale = d3.scale.linear()
+      .domain([0, 100])
+      .range([h, 0]);
 
-  // setup a player class
-  // add teardrop SVG as player
-  // add attr to player
-    // what does r = 5 mean?
-  // use default parameters as contructor for class  
-  // apply boundaries for player
-  // render the player
-  // getters and setters to move player within bounds
-  // apply transform
-  // 
+  // select svg    
+  svg.attr('width', w + margin.left + margin.right)
+  .attr('height', h + margin.top + margin.bottom)
+  .append('g')
+  .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
+
+  
+  // selects the circles in the board, use data to append the circles with the attribute of cx, cy, and r.
+  svg.selectAll('circle')
+  .data(enemies)
+  .enter()
+  .append('circle')
+  .attr('class', 'enemy')
+  .attr('fill', 'black')
+  .attr('cx', function (d) {
+      return xScale(d.x);
+  })
+  .attr('cy', function (d) {
+      return yScale(d.y);
+  })
+  .attr('r', function (d) {
+      return d.r;
+  });
+
+  // Create custom tween (animation term) for each enemies created
+  setInterval(function() {
+      _.each(enemies, function (datum) {
+          datum.x = Math.round(Math.random() * 100);
+          datum.y = Math.round(Math.random() * 100);
+      })
+
+      svg.selectAll('circle')
+          .transition()
+          .duration(1000)
+          .attr('cx', function (d) {
+              return xScale(d.x);
+          })
+          .attr('cy', function (d) {
+              return yScale(d.y);
+          });
+  }, 1000);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
