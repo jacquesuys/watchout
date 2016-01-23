@@ -6,15 +6,6 @@
   var w = 500 - margin.left - margin.right,
       h = 400 - margin.top - margin.bottom;
 
-  // x scale size    
-  var xScale = d3.scale.linear()
-      .domain([0, 100])
-      .range([0, w]);
-  // y scale size    
-  var yScale = d3.scale.linear()
-      .domain([0, 100])
-      .range([h, 0]);
-
   var enemies = [];
 
   var Unit = function (x, y, r) {
@@ -24,8 +15,8 @@
   };
 
   var Enemy = function () {
-    var ran1 = Math.floor(Math.random() * 100);
-    var ran2 = Math.floor(Math.random() * 100);
+    var ran1 = Math.floor(Math.random() * w);
+    var ran2 = Math.floor(Math.random() * h);
     Unit.call(this, ran1, ran2, 20);
   };
 
@@ -55,8 +46,7 @@
 
   var dragged = function(d) {
     d3.select(this)
-      .attr("cx", xScale(d.x = d3.event.x) )
-      .attr("cy", yScale(d.y = d3.event.y) );
+      .attr({ "transform": "translate(" + window.event.clientX + "," + window.event.clientY + ")"});
   };
 
   var drag = d3.behavior.drag();
@@ -79,15 +69,33 @@
   .attr('class', 'hero')
   .attr('fill', 'red')
   .attr('cx', function (d) {
-      return xScale(d.x);
+      return d.x;
   })
   .attr('cy', function (d) {
-      return yScale(d.y);
+      return d.y;
   })
   .attr('r', function (d) {
       return d.r;
   })
   .call(drag);
+
+  // Create custom tween (animation term) for each enemies created
+  var enemyTween  = setInterval(function() {
+    _.each(enemies, function (datum) {
+        datum.x = Math.round(Math.random() * 500);
+        datum.y = Math.round(Math.random() * 400);
+    });
+
+    svg.selectAll('.enemy')
+    .transition()
+    .duration(1000)
+    .attr('cx', function (d) {
+        return d.x;
+    })
+    .attr('cy', function (d) {
+        return d.y;
+    });
+  }, 1000);
   
   // selects the circles in the board, use data to append the circles with the attribute of cx, cy, and r.
   svg.selectAll('circle')
@@ -97,33 +105,17 @@
   .attr('class', 'enemy')
   .attr('fill', 'black')
   .attr('cx', function (d) {
-      return xScale(d.x);
+      return d.x;
   })
   .attr('cy', function (d) {
-      return yScale(d.y);
+      return d.y;
   })
   .attr('r', function (d) {
       return d.r;
-  });
+  })
+  .transition()
+  .tween(enemyTween);
 
-
-  // Create custom tween (animation term) for each enemies created
-  setInterval(function() {
-      _.each(enemies, function (datum) {
-          datum.x = Math.round(Math.random() * 100);
-          datum.y = Math.round(Math.random() * 100);
-      })
-
-      svg.selectAll('.enemy')
-          .transition()
-          .duration(1000)
-          .attr('cx', function (d) {
-              return xScale(d.x);
-          })
-          .attr('cy', function (d) {
-              return yScale(d.y);
-          });
-  }, 1000);
 
 
 
