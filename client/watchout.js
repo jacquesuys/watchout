@@ -6,6 +6,15 @@
   var w = 500 - margin.left - margin.right,
       h = 400 - margin.top - margin.bottom;
 
+  // x scale size    
+  var xScale = d3.scale.linear()
+      .domain([0, 100])
+      .range([0, w]);
+  // y scale size    
+  var yScale = d3.scale.linear()
+      .domain([0, 100])
+      .range([h, 0]);
+
   var enemies = [];
 
   var Unit = function (x, y, r) {
