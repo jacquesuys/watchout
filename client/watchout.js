@@ -38,14 +38,24 @@
     Unit.call(this, x, y, r);
   };
 
-  // x scale size    
-  var xScale = d3.scale.linear()
-      .domain([0, 100])
-      .range([0, w]);
-  // y scale size    
-  var yScale = d3.scale.linear()
-      .domain([0, 100])
-      .range([h, 0]);
+  var player = new Hero();
+
+  var dragstarted = function(d) {
+    d3.event.sourceEvent.stopPropagation();
+  };
+
+  var dragged = function(d) {
+    d3.select(this)
+      .attr("cx", xScale(d.x = d3.event.x) )
+      .attr("cy", yScale(d.y = d3.event.y) );
+  };
+
+  var drag = d3.behavior.drag();
+
+  drag
+  .origin(function(d) { return d;} )
+  .on('dragstart', dragstarted)
+  .on('drag', dragged);
 
   // select svg    
   svg.attr('width', w + margin.left + margin.right)
@@ -54,7 +64,7 @@
   .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
 
   svg.selectAll('circle')
-  .data([new Hero()])
+  .data([player])
   .enter()
   .append('circle')
   .attr('class', 'hero')
@@ -67,7 +77,8 @@
   })
   .attr('r', function (d) {
       return d.r;
-  });
+  })
+  .call(drag);
   
   // selects the circles in the board, use data to append the circles with the attribute of cx, cy, and r.
   svg.selectAll('circle')
