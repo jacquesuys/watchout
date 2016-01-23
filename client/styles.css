@@ -11,9 +11,7 @@ body {
 }
 
 .enemies {
-  background-image: url(asteriod.png);
-  background-repeat: no-repeat;
-  background-position: top left;
+  background-image: url(asteroid.png);
   width: 200px;
   height: 200px;
 }
